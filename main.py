@@ -75,7 +75,7 @@ def preprocessing_page():
         csv_raw_data = f.read()
     st.write("Unduh Dataset")
     st.download_button(
-        label="Unduh Data",
+        label="Unduh Dataset",
         data=csv_raw_data,
         file_name="crawling.csv",
         mime="text/csv",
@@ -93,7 +93,7 @@ def preprocessing_page():
         st.dataframe(data_baru[['teks']])
 
         # Menambahkan tombol Preproses
-        if st.button("Bersihkan"):
+        if st.button("Preproses Data"):
             # Proses preprocessing setelah tombol diklik
             factory = StemmerFactory()
             stemmer = factory.create_stemmer()
@@ -113,8 +113,8 @@ def preprocessing_page():
 
 # Halaman Klasifikasi
 def klasifikasi_page():
-    st.title("Halaman Analisis Sentimen")
-    if st.button("Analisis Sentimen"):
+    st.title("Halaman Klasifikasi")
+    if st.button("Klasifikasi"):
     
         # st.write("Penerapan klasifikasi.")
 
@@ -155,7 +155,7 @@ def klasifikasi_page():
 # Halaman Klasterisasi
 def klasterisasi_page():
     st.title("Halaman Klasterisasi")
-    if st.button("Klaster"):
+    if st.button("Klasterisasi"):
 
         df_selected = pd.read_csv('klasifikasi/klasifikasi.csv')
 
@@ -219,7 +219,10 @@ def klasterisasi_page():
 
         # menghapus baris yang berisi teks yang dijadikan centroid sebelumnya dari dataframe
         centroid_texts = set(centroid_sentences.values())
+
         df_selected = df_selected[~df_selected['teks-kmeans'].isin(centroid_texts)].reset_index(drop=True)
+
+        df_selected.to_csv("dataset_berlabel/klaster_prediksi.csv", index=False) # Digunakan untuk confussion matrix k-means
 
         # Memisahkan klaster menjadi DataFrame yang berbeda dan menambahkan kolom 'label'
         clusters = [df_selected[df_selected['label-klaster'] == i][['teks-kmeans', 'label', 'label-klaster']].reset_index(drop=True) for i in range(4)]
@@ -243,7 +246,7 @@ def klasterisasi_page():
 def visualisasi_page():
     st.header("Visualisasi Data")
     if st.button("Visualisasikan"):
-        # Mengambil dataset
+        # Load hasil analisis sentimen dari file
         def memuat_data_sentimen(cluster_name):
             return pd.read_csv(f'klaster/{cluster_name}.csv', sep='\t')
 
@@ -257,7 +260,7 @@ def visualisasi_page():
             if not dataframe_klaster.empty:
                 jumlah_data_klaster.append(len(dataframe_klaster))
 
-        # Distribusi Klaster (Bar chart)
+        # Bar Chart jumlah data pada setiap klaster
         st.subheader("Jumlah Data pada Setiap Klaster")
         fig, ax = plt.subplots(figsize=(8, 6))
         ax.bar(label_klaster, jumlah_data_klaster, color='#87CEFA')
@@ -267,7 +270,7 @@ def visualisasi_page():
         ax.bar_label(ax.containers[0])
         st.pyplot(fig)
 
-        # Visualisasi pada setiap klaster (Pie chart)
+        # Load dan visualisasikan data untuk setiap klaster
         for label in label_klaster:
             dataframe_klaster = memuat_data_sentimen(label)  # Ambil DataFrame dari file
             if not dataframe_klaster.empty:
@@ -287,21 +290,17 @@ def visualisasi_page():
                 st.write(f"Distribusi sentimen pada klaster {label.capitalize()} menunjukkan:")
                 for sentiment, count in jumlah_sentimen.items():
                     st.write(f"- **{sentiment}**: {count} ulasan")
-
-
-
-
-    
+  
 
 # Menu navigasi halaman
-page = st.sidebar.selectbox("Pilih Halaman", ["Preprocessing", "Sentiment Analysis", "Clustering", "Data Visualization"])
+page = st.sidebar.selectbox("Pilih Halaman", ["Preprocessing", "Klasifikasi", "Klasterisasi", "Visualisasi"])
 
 # Menampilkan halaman berdasarkan pilihan pengguna
 if page == "Preprocessing":
     preprocessing_page()
-elif page == "Sentiment Analysis":
+elif page == "Klasifikasi":
     klasifikasi_page()
-elif page == "Clustering":
+elif page == "Klasterisasi":
     klasterisasi_page()
-elif page == "Data Visualization":
+elif page == "Visualisasi":
     visualisasi_page()
