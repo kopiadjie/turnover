@@ -5,3 +5,4 @@ Sastrawi
 scikit-learn
 imblearn
 joblib
+matplotlib
