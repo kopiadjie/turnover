@@ -1,11 +1,11 @@
 import json
 import streamlit as st
 import pandas as pd
-import numpy as np
+# import numpy as np
 import re
 import joblib
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 from sklearn.metrics import davies_bouldin_score
@@ -24,19 +24,19 @@ def load_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return set(file.read().splitlines())
 
-# Fungsi preprocessing
-def preprocessing(text, slang_dict, stopwords, kamus_indonesia, stemmer):
-    text = text.lower()  # Case folding
-    text = re.sub(r"\\t|\\n|\\u|\\|http[s]?://\\S+|[@#][A-Za-z0-9_]+", " ", text)  # Hapus karakter khusus
-    text = re.sub(r"\\d+", "", text)  # Hapus angka
-    text = text.translate(str.maketrans("", "", string.punctuation))  # Hapus tanda baca
-    text = re.sub(r"\\s+", ' ', text).strip()  # Rapikan spasi ganda
-    text = re.sub(r"\b[a-zA-Z]\b", "", text)  # Hapus huruf tunggal
-    text = ' '.join([slang_dict.get(word, word) for word in text.split()])  # Normalisasi slang
-    text = word_tokenize(text)  # Tokenisasi
-    text = [stemmer.stem(word) for word in text]  # Stemming
-    text = [word for word in text if word not in stopwords and len(word) > 3 and word in kamus_indonesia]  # Filter
-    return ' '.join(text)
+# # Fungsi preprocessing
+# def preprocessing(text, slang_dict, stopwords, kamus_indonesia, stemmer):
+#     text = text.lower()  # Case folding
+#     text = re.sub(r"\\t|\\n|\\u|\\|http[s]?://\\S+|[@#][A-Za-z0-9_]+", " ", text)  # Hapus karakter khusus
+#     text = re.sub(r"\\d+", "", text)  # Hapus angka
+#     text = text.translate(str.maketrans("", "", string.punctuation))  # Hapus tanda baca
+#     text = re.sub(r"\\s+", ' ', text).strip()  # Rapikan spasi ganda
+#     text = re.sub(r"\b[a-zA-Z]\b", "", text)  # Hapus huruf tunggal
+#     text = ' '.join([slang_dict.get(word, word) for word in text.split()])  # Normalisasi slang
+#     text = word_tokenize(text)  # Tokenisasi
+#     text = [stemmer.stem(word) for word in text]  # Stemming
+#     text = [word for word in text if word not in stopwords and len(word) > 3 and word in kamus_indonesia]  # Filter
+#     return ' '.join(text)
 
 slang_dict = json.load(open("txt/kamusSlang.json", "r", encoding="utf-8"))
 stopwords = load_file('txt/stopwords-1.txt')
@@ -129,8 +129,7 @@ def klasifikasi_page():
         # Mengubah teks dari kolom 'teks' menjadi representasi numerik dengan vectorizer yang sudah dilatih
         X_baru = vectorizer.transform(data_baru['teks'])
         
-        # st.dataframe(data_baru[['teks']])
-        
+        # st.dataframe(data_baru[['teks']])  
 
         # Melakukan prediksi menggunakan model yang sudah dilatih
         prediksi = model.predict(X_baru)
@@ -203,7 +202,7 @@ def klasterisasi_page():
 
         # Vektorisasi teks menggunakan TF-IDF
         vectorizer = TfidfVectorizer()
-        X = vectorizer.fit_transform(df_selected['teks-kmeans'])  # Menggunakan kolom teks yang telah dibersihkan
+        X = vectorizer.fit_transform(df_selected['teks-kmeans'])  # Menggunakan kolom teks yang telah dibersihkan  
         lokasi_centroid = X[list(posisi.keys())].toarray()
 
         # K-means clustering
@@ -236,8 +235,6 @@ def klasterisasi_page():
             st.dataframe(cleaned_data)
             # Menyimpan data ke file
             cleaned_data.to_csv(f'klaster/{label}.csv', sep='\t', index=False, header=True)
-
-        # st.success("Klasterisasi selesai. File hasil klasterisasi telah disimpan di folder 'klaster/'.")
 
     
 
