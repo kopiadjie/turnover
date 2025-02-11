@@ -149,6 +149,7 @@ def HClustering():
         # menghapus baris yang berisi teks yang dijadikan centroid sebelumnya dari dataframe
         centroid_texts = set(centroid_sentences.values())
         df_selected = df_selected[~df_selected['teks'].isin(centroid_texts)].reset_index(drop=True)
+        df_selected = df_selected[~df_selected['teks'].str.strip().eq('')]
 
         df_selected.to_csv("dataset_berlabel/klaster_prediksi.csv", index=False) # Digunakan untuk confussion matrix k-means
 
