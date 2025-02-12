@@ -91,7 +91,7 @@ def HPreprocessing():
 # Halaman Klasterisasi
 def HClustering():
     st.title("Halaman Klasterisasi")
-    if st.button("Clustering"):
+    if st.button("Klaster"):
         df_selected = pd.read_csv('preprocessing/preprocessing.csv')
 
         # cek nilai null dan memastikan data berupa string
@@ -221,48 +221,41 @@ def HSentimentAnalysis():
 # Halaman Visualisasi
 def HDataVisualization():
     st.header("Visualisasi Data")
-    if st.button("Data Visualization"):
-        # Load hasil analisis sentimen dari file
+    if st.button("Visualisasi"):
         def memuat_data_sentimen(cluster_name):
             return pd.read_csv(f'klasifikasi/{cluster_name}.csv', sep='\t')
 
-        # Label klaster
         label_klaster = ['kompensasi', 'kepuasan kerja', 'aktualisasi', 'hubungan kerja']
 
         # Visualisasi Bar Chart untuk jumlah data pada setiap klaster
         jumlah_data_klaster = []
         for label in label_klaster:
-            dataframe_klaster = memuat_data_sentimen(label)  # Ambil DataFrame dari file
+            dataframe_klaster = memuat_data_sentimen(label)
             if not dataframe_klaster.empty:
                 jumlah_data_klaster.append(len(dataframe_klaster))
-
-        # Bar Chart jumlah data pada setiap klaster
-        st.subheader("Jumlah Data pada Setiap Klaster")
-        fig, ax = plt.subplots(figsize=(8, 6))
-        ax.bar(label_klaster, jumlah_data_klaster, color='#87CEFA')
+        st.subheader("Faktor-Faktor Yang Mempengaruhi Perpindahan Karir")
+        fig, ax = plt.subplots(figsize=(8,4))
+        ax.bar(label_klaster, jumlah_data_klaster, color='green')
         ax.set_title("Jumlah Data untuk Setiap Klaster", fontsize=16)
-        ax.set_xlabel("Klaster", fontsize=14)
-        ax.set_ylabel("Jumlah data", fontsize=14)
+        ax.set_xlabel("Faktor-faktor", fontsize=14)
+        ax.set_ylabel("Jumlah Data", fontsize=14)
         ax.bar_label(ax.containers[0])
         st.pyplot(fig)
 
-        # Load dan visualisasikan data untuk setiap klaster
         for label in label_klaster:
-            dataframe_klaster = memuat_data_sentimen(label)  # Ambil DataFrame dari file
+            dataframe_klaster = memuat_data_sentimen(label) 
             if not dataframe_klaster.empty:
                 jumlah_sentimen = dataframe_klaster['label_sentimen'].value_counts()
 
-                # Buat Pie Chart untuk distribusi sentimen
-                st.subheader(f"Visualisasi Data Sentimen Klaster {label.capitalize()}")
+                st.subheader(f"Faktor {label.capitalize()}")
                 st.write(f"Total data pada klaster {label.capitalize()} sebanyak: {len(dataframe_klaster)}")
-                explode = (0.03, 0.03, 0.03)  # Jarak antara potongan pie dan pusatnya
+                explode = (0.03, 0.03, 0.03)
                 fig, ax = plt.subplots(figsize=(10,5))
-                colors = ['#ADD8E6', '#87CEFA', '#4682B4']
+                colors = ['#90EE90', '#32CD32', '#228B22']
                 ax.pie(jumlah_sentimen, labels=jumlah_sentimen.index, autopct='%1.1f%%', startangle=0, colors=colors, pctdistance=0.7, explode=explode)
-                ax.axis('equal')  # Membuat pie chart berbentuk lingkaran.
+                ax.axis('equal')
                 st.pyplot(fig)
 
-                # Deskripsi singkat hasil analisis
                 st.write(f"Distribusi sentimen pada klaster {label.capitalize()} menunjukkan:")
                 for sentiment, count in jumlah_sentimen.items():
                     st.write(f"- **{sentiment}**: {count} ulasan")
