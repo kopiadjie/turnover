@@ -212,14 +212,14 @@ def HSentimentAnalysis():
         dfkHubunganKerja.to_csv('klasifikasi/hubungan kerja.csv', index=False, sep='\t')
         
         # menampilkan file hasil klasifikasi
-        st.write("Hasil Klasifikasi")
-        st.write("Analisis Sentimen Faktor Kompensasi")
+        st.subheader("Hasil Klasifikasi")
+        st.subheader("Analisis Sentimen Faktor Kompensasi")
         st.dataframe(dfkKompensasi)
-        st.write("Analisis Sentimen Faktor Kepuasan Kerja")
+        st.subheader("Analisis Sentimen Faktor Kepuasan Kerja")
         st.dataframe(dfkKepuasanKerja)
-        st.write("Analisis Sentimen Faktor Aktualisasi")
+        st.subheader("Analisis Sentimen Faktor Aktualisasi")
         st.dataframe(dfkAktualisasi)
-        st.write("Analisis Sentimen Faktor Hubungan Kerja")
+        st.subheader("Analisis Sentimen Faktor Hubungan Kerja")
         st.dataframe(dfkHubunganKerja)
 
 # Halaman Visualisasi
