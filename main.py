@@ -213,9 +213,13 @@ def HSentimentAnalysis():
         
         # menampilkan file hasil klasifikasi
         st.write("Hasil Klasifikasi")
+        st.write("Analisis Sentimen Faktor Kompensasi")
         st.dataframe(dfkKompensasi)
+        st.write("Analisis Sentimen Faktor Kepuasan Kerja")
         st.dataframe(dfkKepuasanKerja)
+        st.write("Analisis Sentimen Faktor Aktualisasi")
         st.dataframe(dfkAktualisasi)
+        st.write("Analisis Sentimen Faktor Hubungan Kerja")
         st.dataframe(dfkHubunganKerja)
 
 # Halaman Visualisasi
