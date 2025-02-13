@@ -75,16 +75,16 @@ def HPreprocessing():
         st.dataframe(data_baru[['teks']])
 
         # menambahkan tombol preproses
-        if st.button("Preproses Data"):
+        if st.button("Bersihkan"):
             # Proses preprocessing setelah tombol diklik
             factory = StemmerFactory()
             stemmer = factory.create_stemmer()
             data_baru['teks'] = data_baru['teks'].apply(lambda x: preprocessing(x, slang_dict, stopwords, kamus_indonesia, stemmer))
             data_baru.to_csv('preprocessing/preprocessing.csv', index=0)
-            st.write("Preprosesing selesai")
+            st.write("Preprocessing selesai")
 
     # menampilkan hasil preprocessing
-    if st.button("Tampilkan Hasil Preprosesing"):
+    if st.button("Tampilkan Hasil Preprocessing"):
         hasilpreprocessing = pd.read_csv("preprocessing/preprocessing.csv")
         st.dataframe(hasilpreprocessing)
 
@@ -132,7 +132,7 @@ def HClustering():
 
         # vektorisasi teks menggunakan TF-IDF
         vectorizer = TfidfVectorizer()
-        X = vectorizer.fit_transform(df_selected['teks'])  # Menggunakan kolom teks yang telah dibersihkan  
+        X = vectorizer.fit_transform(df_selected['teks']) 
         lokasi_centroid = X[list(posisi.keys())].toarray()
 
         # K-means clustering
@@ -151,7 +151,7 @@ def HClustering():
         df_selected = df_selected[~df_selected['teks'].isin(centroid_texts)].reset_index(drop=True)
         df_selected = df_selected[~df_selected['teks'].str.strip().eq('')]
 
-        df_selected.to_csv("dataset_berlabel/klaster_prediksi.csv", index=False) # Digunakan untuk confussion matrix k-means
+        df_selected.to_csv("dataset_berlabel/klaster_prediksi.csv", index=False) # digunakan untuk confussion matrix k-means
 
         # pisah klaster menjadi dataframe yang berbeda dan menambahkan kolom 'label'
         clusters = [df_selected[df_selected['label_klaster'] == i][['teks', 'label_klaster']].reset_index(drop=True) for i in range(4)]
@@ -212,7 +212,6 @@ def HSentimentAnalysis():
         dfkHubunganKerja.to_csv('klasifikasi/hubungan kerja.csv', index=False, sep='\t')
         
         # menampilkan file hasil klasifikasi
-        st.subheader("Hasil Klasifikasi")
         st.subheader("Analisis Sentimen Faktor Kompensasi")
         st.dataframe(dfkKompensasi)
         st.subheader("Analisis Sentimen Faktor Kepuasan Kerja")
@@ -224,7 +223,7 @@ def HSentimentAnalysis():
 
 # Halaman Visualisasi
 def HDataVisualization():
-    st.header("Visualisasi Data")
+    st.title("Halaman Visualisasi Data")
     if st.button("Visualisasi"):
         def memuat_data_sentimen(cluster_name):
             return pd.read_csv(f'klasifikasi/{cluster_name}.csv', sep='\t')
@@ -237,7 +236,7 @@ def HDataVisualization():
             dataframe_klaster = memuat_data_sentimen(label)
             if not dataframe_klaster.empty:
                 jumlah_data_klaster.append(len(dataframe_klaster))
-        st.subheader("Faktor-Faktor Yang Mempengaruhi Perpindahan Karir")
+        st.subheader("Distribusi Data Pada Faktor-Faktor yang Mempengaruhi Perpindahan Karir")
         fig, ax = plt.subplots(figsize=(8,4))
         ax.bar(label_klaster, jumlah_data_klaster, color='green')
         ax.set_title("Jumlah Data untuk Setiap Klaster", fontsize=16)
